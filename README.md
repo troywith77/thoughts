@@ -1,1 +1,1 @@
-Thoughts on JavaScript
+# Thoughts on JavaScript
