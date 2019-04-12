@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Debounce and Throttle</title>
+  <style>
+    body { margin: 0; height: 100vh; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <p></p>
+  <script>
+    let onMoveDebounced = debounce(onMove, 10000, true)
+    document.body.onmousemove = onMoveDebounced
+    document.body.onclick = onMoveDebounced.cancel
+
+    function onMove(e) {
+      console.log('moving')
+      // 正确的 this 指向
+      console.log(this)
+      // 正确的参数传递
+      console.log(e)
+      render(e)
+    }
+
+    // debounce 函数的作用是防止一些有性能隐患的函数过多的执行，比如 onscroll, onresize，
+    // 使用 debounce 之后，只有在定义的 delay 内没有继续触发函数才会执行一次
+
+    /*
+      params: {
+        fn?Function: 函数,
+        delay?Number: 延时,
+        immediate?Boolean: 是否立即执行，只在第一次触发时或者取消后立即执行
+      }
+    */
+    function debounce(fn, delay, immediate) {
+      // 定义一个变量存储定时器
+      let timer
+      function fReturn (...args) {
+        // args 是传递进来的参数
+        // 如果 timer 已经被设置过了，就清除 timer，避免重复执行
+        if (timer) {
+          clearTimeout(timer)
+        }
+        // 如果 immediate 为 true 并且是第一次执行
+        if (immediate && !timer) {
+          // 立即执行
+          fn.apply(this, args)
+        }
+        // 设置定时器
+        timer = setTimeout(() => {
+          // 传递 this 和 arguments
+          fn.apply(this, args)
+        }, delay)
+      }
+      // 定义一个取消函数
+      fReturn.cancel = function () {
+        // 清除 timer 并且把 timer 设置为 null，如果设置了 immediate 为 true，之后会重新出发立即执行
+        clearTimeout(timer)
+        timer = null
+      }
+      return fReturn
+    }
+
+    function render({ x, y }) {
+      document.querySelector('p').innerHTML = `x: ${x}, y: ${y}`
+    }
+  </script>
+</body>
+</html>
