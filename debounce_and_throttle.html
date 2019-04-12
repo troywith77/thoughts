@@ -12,9 +12,10 @@
 <body>
   <p></p>
   <script>
-    let onMoveDebounced = debounce(onMove, 10000, true)
-    document.body.onmousemove = onMoveDebounced
-    document.body.onclick = onMoveDebounced.cancel
+    // let onMoveDebounced = debounce(onMove, 3000, true)
+    // document.body.onclick = onMoveDebounced.cancel
+    // document.body.onmousemove = onMoveDebounced
+    document.body.onmousemove = throttle2(onMove, 300)
 
     function onMove(e) {
       console.log('moving')
@@ -23,6 +24,10 @@
       // 正确的参数传递
       console.log(e)
       render(e)
+    }
+
+    function render({ x, y }) {
+      document.querySelector('p').innerHTML = `x: ${x}, y: ${y}`
     }
 
     // debounce 函数的作用是防止一些有性能隐患的函数过多的执行，比如 onscroll, onresize，
@@ -64,8 +69,29 @@
       return fReturn
     }
 
-    function render({ x, y }) {
-      document.querySelector('p').innerHTML = `x: ${x}, y: ${y}`
+    // throttle 是指传入的函数会每隔一定的时间执行一次
+    // 这里用两种方法实现了 throttle
+    function throttle1(fn, delay) {
+      let timer
+      return function (...args) {
+        // 如果上一个定时器没执行完直接 return
+        if (timer) return
+        timer = setTimeout(() => {
+          // 定时执行 fn，执行完后把定时器清除
+          fn.apply(this, args)
+          timer = null
+        }, delay)
+      }
+    }
+
+    function throttle2(fn, delay) {
+      let startTime
+      return function (...args) {
+        // 判断当前时间与上一次执行函数的时间有没有超过 delay，没有的话忽略
+        if (startTime && Date.now() - startTime < delay) return
+        fn.apply(this, args)
+        startTime = Date.now()
+      }
     }
   </script>
 </body>
