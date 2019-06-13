@@ -1,3 +1,5 @@
+// !!! Promise 的 then 和 catch 每次都会返回一个新的 Promise !!!
+
 p1 = Promise.resolve(true)
 p2 = Promise.reject(new Error('ah!!!'))
 
