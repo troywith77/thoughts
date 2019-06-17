@@ -42,3 +42,27 @@ function range(sequence, low, high) {
 }
 
 console.log(...range(random, 0, 0.9))
+
+const arr = [10, 100, 1000]
+
+function repeat(sequence, times) {
+  return {
+    [Symbol.iterator]: () => {
+      let key = 0
+      return {
+        next: () => {
+          if (key >= sequence.length) {
+            key = 0
+            times--
+          }
+          if (times < 1) return { done: true }
+          const item = sequence[key]
+          key++
+          return { value: item, done: false }
+        }
+      }
+    }
+  }
+}
+
+console.log(...repeat(arr, 3))
