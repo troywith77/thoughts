@@ -66,3 +66,47 @@ function repeat(sequence, times) {
 }
 
 console.log(...repeat(arr, 3))
+
+// infinite iterator
+function* fib1() {
+  let previous = 0
+  let current = 1
+  while (true) {
+    yield current
+    let next = previous + current
+    previous = current
+    current = next
+  }
+}
+
+const fib2 = {
+  [Symbol.iterator]() {
+    let previous = 0
+    let current = 1
+    return {
+      next: () => {
+        let next = previous + current
+        let value = current
+        previous = current
+        current = next
+        return { value, done: false }
+      }
+    }
+  }
+}
+
+g1 = fib1()
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+
+g2 = fib2[Symbol.iterator]()
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
+console.log(g1.next())
