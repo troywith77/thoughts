@@ -95,6 +95,19 @@ const fib2 = {
   }
 }
 
+const fib3 = {
+  * [Symbol.iterator]() {
+    let previous = 0
+    let current = 1
+    while (true) {
+      yield current
+      let next = previous + current
+      previous = current
+      current = next
+    }
+  }
+}
+
 g1 = fib1()
 console.log(g1.next())
 console.log(g1.next())
@@ -104,9 +117,17 @@ console.log(g1.next())
 console.log(g1.next())
 
 g2 = fib2[Symbol.iterator]()
-console.log(g1.next())
-console.log(g1.next())
-console.log(g1.next())
-console.log(g1.next())
-console.log(g1.next())
-console.log(g1.next())
+console.log(g2.next())
+console.log(g2.next())
+console.log(g2.next())
+console.log(g2.next())
+console.log(g2.next())
+console.log(g2.next())
+
+g3 = fib3[Symbol.iterator]()
+console.log(g3.next())
+console.log(g3.next())
+console.log(g3.next())
+console.log(g3.next())
+console.log(g3.next())
+console.log(g3.next())
