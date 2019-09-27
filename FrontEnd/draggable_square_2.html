@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>draggable_square</title>
+  <title>draggable_square_2</title>
   <style>
     html,
     body {
@@ -18,6 +18,9 @@
       background-color: #ddd;
     }
     #square {
+      /* position: absolute;
+      top: 0;
+      left: 0; */
       width: 200px;
       height: 200px;
       background-color: #000;
@@ -29,19 +32,18 @@
     <div id="square"></div>
   </div>
   <script>
-    let coords = square.getBoundingClientRect() // 获取方块初始的偏移量，主要是 top 和 left
     let moving = false // 设置 flag，只有按住了方块才处理 mousemove 事件
     let dx
     let dy
+    let lastX = 0
+    let lastY = 0
+    let _left = 0, _top = 0
 
     square.addEventListener('mousedown', (e) => {
       moving = true
       const { x, y } = e
-      // 获取按下鼠标时与方块左上点的偏移量
-      // 根据 x 和 y 分别减去方块当前相对窗口的偏移量可得
-      const coords = square.getBoundingClientRect()
-      dx = x - coords.left
-      dy = y - coords.top
+      lastX = x
+      lastY = y
       // 按下鼠标时添加事件
       document.addEventListener('mousemove', onSquareMove)
     })
@@ -50,13 +52,19 @@
       moving = false
       // 松掉鼠标时移除事件
       document.removeEventListener('mousemove', onSquareMove)
+      const { x, y } = e
+      lastX = x
+      lastY = y
+      _left = _left + dx
+      _top = _top + dy
     })
     
     function onSquareMove(e) {
       if (!moving) return
       const { x, y } = e
-      // 方块 x 轴方向的 translateX 为鼠标 x 坐标减去方块初始的 left 偏移量再减去鼠标相对方块本身的偏移量
-      square.style.transform = `translate3D(${x - coords.left - dx}px, ${y - coords.top - dy}px, 0)`
+      dx = x - lastX
+      dy = y - lastY
+      square.style.transform = `translate3D(${_left + dx}px, ${_top + dy}px, 0)`
     }
   </script>
 </body>
