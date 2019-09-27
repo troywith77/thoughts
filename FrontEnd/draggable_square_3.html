@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>draggable_square_2</title>
+  <title>draggable_square_3</title>
   <style>
     html,
     body {
@@ -33,17 +33,15 @@
   </div>
   <script>
     let moving = false // 设置 flag，只有按住了方块才处理 mousemove 事件
-    let dx
-    let dy
-    // lastX 和 lastY 在这里是指上一次按下鼠标时的点
+    // lastX 和 lastY 在这里是指上一次移动鼠标时的点
     let lastX = 0
     let lastY = 0
-    let _left = 0, _top = 0
+    let translateX = 0, translateY = 0
 
     square.addEventListener('mousedown', (e) => {
       moving = true
       const { x, y } = e
-      // 设置最后一个点坐标
+      // 鼠标按下时设置当前点坐标
       lastX = x
       lastY = y
       // 按下鼠标时添加事件
@@ -54,21 +52,21 @@
       moving = false
       // 松掉鼠标时移除事件
       document.removeEventListener('mousemove', onSquareMove)
-      const { x, y } = e
-      // 松掉鼠标时记住最后一个点坐标和transform参数
-      lastX = x
-      lastY = y
-      _left = _left + dx
-      _top = _top + dy
     })
     
     function onSquareMove(e) {
       if (!moving) return
       const { x, y } = e
-      // 计算偏移量，每次都与上一次按下鼠标时的点的坐标相比
-      dx = x - lastX
-      dy = y - lastY
-      square.style.transform = `translate3D(${_left + dx}px, ${_top + dy}px, 0)`
+      // 判断当前mousemove的坐标与上一个点坐标的偏移量
+      const dx = x - lastX
+      const dy = y - lastY
+      // 加上偏移量就是现在的坐标
+      translateX += dx
+      translateY += dy
+      square.style.transform = `translate3D(${translateX}px, ${translateY}px, 0)`
+      // 把当前点坐标设置为最后一个点用来和下一个点做比较
+      lastX = x
+      lastY = y
     }
   </script>
 </body>
